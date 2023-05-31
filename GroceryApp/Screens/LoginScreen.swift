@@ -10,6 +10,7 @@ import SwiftUI
 struct LoginScreen: View {
     
     @EnvironmentObject private var model: GroceryModel
+    @EnvironmentObject private var appState: AppState
     
     @State private var username: String = ""
     @State private var password: String = ""
@@ -25,7 +26,7 @@ struct LoginScreen: View {
             if loginResponseDTO.error {
                 errorMessage = loginResponseDTO.reason ?? ""
             } else {
-                
+                appState.routes.append(.groceryCategoryList)
             }
         } catch {
             errorMessage = error.localizedDescription
@@ -57,6 +58,7 @@ struct LoginScreen_Previews: PreviewProvider {
         NavigationStack {
             LoginScreen()
                 .environmentObject(GroceryModel())
+                .environmentObject(AppState())
         }
     }
 }
