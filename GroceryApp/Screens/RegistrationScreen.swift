@@ -25,8 +25,8 @@ struct RegistrationScreen: View {
             
             if !registerResponseDTO.error {
                 // take the user to the login screen
-            }else if let reason = registerResponseDTO.reason {
-                errorMessage = reason
+            }else {
+                errorMessage = registerResponseDTO.reason ?? ""
             }
         } catch {
             errorMessage = error.localizedDescription
