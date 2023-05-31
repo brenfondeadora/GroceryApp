@@ -19,4 +19,22 @@ class GroceryModel: ObservableObject {
         return registerResponseDTO
     }
     
+    func login(username: String, password: String) async throws -> LoginResponseDTO {
+        let loginPostData = ["username": username, "password": password]
+        
+        // resource
+        let resource = try Resource(url: Constants.Urls.login, method: .post(JSONEncoder().encode(loginPostData)), modelType: LoginResponseDTO.self)
+        
+        let loginResponseDTO = try await httpClient.load(resource)
+        
+        if !loginResponseDTO.error && loginResponseDTO.token != nil && loginResponseDTO.userId != nil {
+            // save the token in user defaults
+            let defaults = UserDefaults.standard
+            defaults.set(loginResponseDTO.token!, forKey: "authToken")
+            defaults.set(loginResponseDTO.userId!.uuidString, forKey: "userId")
+        }
+        
+        return loginResponseDTO
+    }
+    
 }
