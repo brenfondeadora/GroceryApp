@@ -26,7 +26,7 @@ struct LoginScreen: View {
             if loginResponseDTO.error {
                 errorMessage = loginResponseDTO.reason ?? ""
             } else {
-                appState.routes.append(.groceryCategoryList)
+                appState.routes.append(.addGroceryCategory)
             }
         } catch {
             errorMessage = error.localizedDescription
@@ -36,6 +36,8 @@ struct LoginScreen: View {
     var body: some View {
         Form {
             TextField("Username", text: $username)
+                .textCase(.lowercase)
+                .textInputAutocapitalization(.never)
             SecureField("Password", text: $password)
             
             HStack {

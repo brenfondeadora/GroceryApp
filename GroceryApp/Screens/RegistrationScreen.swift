@@ -38,6 +38,8 @@ struct RegistrationScreen: View {
     var body: some View {
         Form {
             TextField("Username", text: $username)
+                .textCase(.lowercase)
+                .textInputAutocapitalization(.never)
             SecureField("Password", text: $password)
             
             HStack {
@@ -77,6 +79,8 @@ struct RegistrationScreenContainer: View {
                             LoginScreen()
                         case .groceryCategoryList:
                             Text("Grocery Category List")
+                        case .addGroceryCategory:
+                            AddGroceryCategoryScreen()
                     }
                 }
         }
