@@ -8,6 +8,7 @@
 import Foundation
 import GroceryAppSharedDTO
 
+@MainActor
 class GroceryModel: ObservableObject {
     
     @Published var groceryCategories: [GroceryCategoryResponseDTO] = []
@@ -40,14 +41,28 @@ class GroceryModel: ObservableObject {
         return loginResponseDTO
     }
     
+    func deleteGroceryCategory(groceryCategoryId: UUID) async throws {
+        guard let userId = UserDefaults.standard.userId else{
+            return
+        }
+        
+        let resource = Resource(url: Constants.Urls.deleteGroceryCategory(userId: userId, groceryCategoryId: groceryCategoryId), method: .delete, modelType: GroceryCategoryResponseDTO.self)
+        
+        let deletedGroceryCategory = try await httpClient.load(resource)
+        
+        // remove the deleted category from the list
+        groceryCategories = groceryCategories.filter{ $0.id != deletedGroceryCategory.id }
+    }
+    
     func populateGroceryCategories() async throws {
         guard let userId = UserDefaults.standard.userId else{
             return
         }
         
-        let resource = try Resource(url: Constants.Urls.groceryCategoriesBy(userId: userId), modelType: [GroceryCategoryResponseDTO].self)
+        let resource = Resource(url: Constants.Urls.groceryCategoriesBy(userId: userId), modelType: [GroceryCategoryResponseDTO].self)
         
         groceryCategories = try await httpClient.load(resource)
+        
     }
     
     func saveGroceryCategory(_ groceryCategoryRequestDTO: GroceryCategoryRequestDTO) async throws {
