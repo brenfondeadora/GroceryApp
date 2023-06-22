@@ -25,8 +25,6 @@ struct GroceryAppApp: App {
                                 LoginScreen()
                             case .groceryCategoryList:
                                 Text("Grocery Category List")
-                            case .addGroceryCategory:
-                                AddGroceryCategoryScreen()
                         }
                     }
             }
