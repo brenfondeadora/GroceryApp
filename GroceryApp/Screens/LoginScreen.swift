@@ -26,7 +26,7 @@ struct LoginScreen: View {
             if loginResponseDTO.error {
                 errorMessage = loginResponseDTO.reason ?? ""
             } else {
-                appState.routes.append(.addGroceryCategory)
+                appState.routes.append(.groceryCategoryList)
             }
         } catch {
             errorMessage = error.localizedDescription
