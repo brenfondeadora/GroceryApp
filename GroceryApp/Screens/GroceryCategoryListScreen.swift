@@ -11,6 +11,8 @@ struct GroceryCategoryListScreen: View {
     
     @EnvironmentObject private var model: GroceryModel
     
+    @State private var isPresented: Bool = false
+    
     private func fetchGroceryCategories() async {
         do {
             try await model.populateGroceryCategories()
@@ -33,19 +35,45 @@ struct GroceryCategoryListScreen: View {
     }
     
     var body: some View {
-        List {
-            ForEach(model.groceryCategories) { groceryCategory in
-                HStack {
-                    Circle()
-                        .fill(Color.fromHex(groceryCategory.colorCode))
-                        .frame(width: 25, height: 25)
-                    Text(groceryCategory.title)
-                }
-            }.onDelete(perform: deleteGroceryCategory)
+        
+        ZStack {
+            if model.groceryCategories.isEmpty {
+                Text("No grocery categories found.")
+            }
+            
+            List {
+                ForEach(model.groceryCategories) { groceryCategory in
+                    HStack {
+                        Circle()
+                            .fill(Color.fromHex(groceryCategory.colorCode))
+                            .frame(width: 25, height: 25)
+                        Text(groceryCategory.title)
+                    }
+                }.onDelete(perform: deleteGroceryCategory)
+            }
         }.task {
             await fetchGroceryCategories()
         }
         .navigationTitle("Categories")
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button("Logout") {
+                    
+                }
+            }
+            
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button {
+                    isPresented = true
+                } label: {
+                    Image(systemName: "plus")
+                }
+            }
+        }.sheet(isPresented: $isPresented) {
+            NavigationStack {
+                AddGroceryCategoryScreen()
+            }
+        }
     }
 }
 
